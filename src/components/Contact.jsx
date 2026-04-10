@@ -26,24 +26,10 @@ export default function Contact() {
     leads.push({ ...form, date: new Date().toISOString() })
     localStorage.setItem('g0ga_leads', JSON.stringify(leads))
 
-    fetch('https://api.web3forms.com/submit', {
+    fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: 'ac90c044-c369-4c9e-b779-52b1ee37c0da',
-        subject: `📩 New Contact Form — ${form.name} (${form.company || 'No company'})`,
-        from_name: 'G0GA Website',
-        name: form.name,
-        email: form.email,
-        message:
-          `New inquiry from G0GA website!\n\n` +
-          `👤 Name: ${form.name}\n` +
-          `📧 Email: ${form.email}\n` +
-          `🏢 Company: ${form.company || '—'}\n` +
-          `🛠 Service: ${form.service || '—'}\n` +
-          `💰 Budget: ${form.budget || '—'}\n\n` +
-          `📝 Project Details:\n${form.message}`,
-      }),
+      body: JSON.stringify(form),
     }).catch(() => {})
 
     setSending(false)
