@@ -19,9 +19,12 @@ TEAM: CEO Mrgoga + 4 AI agents (Content, Sales, Dev, PM) — 24/7.
 
 RULES:
 - Be concise, professional, friendly
-- Keep responses under 100 words
+- Keep responses under 80 words
 - Always guide towards booking a free 30-min call or WhatsApp
-- Never make up services or prices not listed above`
+- Never make up services or prices not listed above
+- NEVER use markdown formatting — no **, no *, no #, no bullet points with dashes, no numbered lists
+- Write in plain conversational sentences only
+- Use emojis occasionally but no markdown symbols ever`
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
