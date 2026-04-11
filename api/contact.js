@@ -4,16 +4,17 @@ export default async function handler(req, res) {
   const { name, email, company, service, budget, message } = req.body
 
   try {
-    const response = await fetch('https://api.web3forms.com/submit', {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer re_3weFhLgW_9f7mr43jJpeU92BZpeX4tE9V`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        access_key: 'ac90c044-c369-4c9e-b779-52b1ee37c0da',
+        from: 'G0GA Website <onboarding@resend.dev>',
+        to: 'gogamr0.01@gmail.com',
         subject: `📩 New Contact Form — ${name} (${company || 'No company'})`,
-        from_name: 'G0GA Website',
-        name,
-        email,
-        message:
+        text:
           `New inquiry from G0GA website!\n\n` +
           `👤 Name: ${name}\n` +
           `📧 Email: ${email}\n` +
@@ -25,10 +26,10 @@ export default async function handler(req, res) {
     })
 
     const data = await response.json()
-    if (data.success) {
+    if (data.id) {
       res.status(200).json({ ok: true })
     } else {
-      console.error('Web3Forms error:', data)
+      console.error('Resend error:', data)
       res.status(500).json({ ok: false })
     }
   } catch (err) {
