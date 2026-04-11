@@ -42,7 +42,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Why This Structure Exists
 - **Single-page app** with no router — all sections stack vertically, nav scrolls to anchors.
 - **No backend or database** — leads saved to `localStorage`, chat history in `localStorage`.
-- **`api/` folder** — Vercel serverless functions only. Currently only `api/chat.js` (Groq AI).
+- **`api/` folder** — Vercel serverless functions: `chat.js` (Groq AI), `contact.js` (contact form email), `book.js` (chat booking email).
 - **One Canvas, rest CSS 3D** — WebGL is expensive. Only `HeroScene.jsx` uses `@react-three/fiber`. All other "3D" effects (flip cards, pricing cubes) are pure CSS `perspective`/`transform-style: preserve-3d`. This is intentional for performance.
 - **Content in one place** — `src/data/content.js` is the single source of truth for all visible text, prices, and data. Components read from it. Exception: `Calculator.jsx` has its own hardcoded `svcs[]` array that must be kept in sync manually.
 
@@ -62,11 +62,19 @@ RGBA equivalent: `rgba(16,185,129,...)` — use this for opacity variants.
 
 ### AI Chat Widget Architecture
 - `ChatWidget.jsx` — React UI, calls `POST /api/chat` via `fetch`
-- `api/chat.js` — Vercel serverless, calls Groq API (Llama 3.1-8b-instant)
-- Env var: `GROQ_API_KEY` (set in Vercel dashboard — production only)
-- History: last 6 messages sent for context
-- Fallback: `localStorage` key `g0ga_chat` logs all user messages
-- Leads: Contact form → `localStorage` key `g0ga_leads`
+- `api/chat.js` — Vercel serverless, calls Groq API (llama-3.3-70b-versatile). Sales persona: Alex.
+- Booking tag: `<<BOOK:NAME|COMPANY|EMAIL|BUDGET|TIME>>` — parsed by `parseReply()` in ChatWidget
+- On booking: saves to `localStorage`, calls `POST /api/book` → Resend email to Mrgoga
+- Env vars: `GROQ_API_KEY`, `RESEND_API_KEY` (Vercel dashboard)
+
+### Email Notifications (Resend)
+- `api/contact.js` — contact form submissions → email to gogamr0.01@gmail.com
+- `api/book.js` — chat bookings → email to gogamr0.01@gmail.com
+- Both use `RESEND_API_KEY` env var. From: `onboarding@resend.dev`
+
+### Social Icons
+- `src/components/SocialIcons.jsx` — shared SVG icon component used by Contact and Footer
+- To update social links: edit `SOCIALS_CONTACT` array in `SocialIcons.jsx` only — both pages update automatically
 
 ---
 
@@ -99,7 +107,7 @@ git push origin main # Auto-deploys via Vercel GitHub integration
 |------|---------------------|
 | Service prices | `src/components/Calculator.jsx` → `svcs[]` |
 | WhatsApp number | `Contact.jsx` + `Footer.jsx` + `content.js` |
-| Social links | `Contact.jsx` socials array + `Footer.jsx` socials array |
+| Social links | `SocialIcons.jsx` → `SOCIALS_CONTACT` array only |
 | AI chat persona | `api/chat.js` → `SYSTEM_PROMPT` constant |
 
 ### Chat Responses
@@ -153,9 +161,8 @@ git push origin main # Auto-deploys via Vercel GitHub integration
 
 | Variable | Purpose | Where set |
 |----------|---------|-----------|
-| `GROQ_API_KEY` | AI chat (Llama 3.1 via Groq) | Vercel dashboard → Production |
-
-To update: `vercel env rm GROQ_API_KEY production --yes && vercel env add GROQ_API_KEY production --value "gsk_..." --yes && vercel --prod`
+| `GROQ_API_KEY` | AI chat via Groq (llama-3.3-70b) | Vercel dashboard → Production |
+| `RESEND_API_KEY` | Email notifications via Resend | Vercel dashboard → Production |
 
 ---
 
