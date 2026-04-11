@@ -62,8 +62,8 @@ export default function Pricing() {
               </ul>
 
               <button onClick={go}
-                className={`w-full py-3 rounded-xl text-[.85rem] font-bold transition-all hover:-translate-y-0.5 ${t.featured ? 'text-black' : 'border text-white hover:border-teal/50 hover:text-teal'}`}
-                style={t.featured ? { background:`linear-gradient(135deg,${t.color},#34d399)`, boxShadow:`0 4px 18px ${t.color}35` } : { borderColor:`${t.color}30` }}>
+                className="w-full py-3 rounded-xl text-[.85rem] font-bold text-white transition-all hover:-translate-y-0.5 hover:opacity-90"
+                style={{ background:`linear-gradient(135deg,${t.color},#34d399)`, boxShadow:`0 4px 18px ${t.color}30` }}>
                 {t.cta}
               </button>
             </motion.div>
