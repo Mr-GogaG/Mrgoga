@@ -16,6 +16,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name:'', email:'', company:'', service:'', budget:'', message:'' })
   const [done, setDone] = useState(false)
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
   const upd = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
 
   const submit = async e => {
@@ -26,14 +27,19 @@ export default function Contact() {
     leads.push({ ...form, date: new Date().toISOString() })
     localStorage.setItem('g0ga_leads', JSON.stringify(leads))
 
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    }).catch(() => {})
-
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json()
+      if (!data.ok) setError('Server error — please WhatsApp us directly.')
+      else setDone(true)
+    } catch {
+      setError('Network error — please WhatsApp us directly.')
+    }
     setSending(false)
-    setDone(true)
   }
 
   return (
@@ -144,6 +150,7 @@ export default function Contact() {
                   <textarea required value={form.message} onChange={upd('message')} rows={4}
                     placeholder="Describe your goals and what you need…" className="field resize-none" />
                 </div>
+                {error && <p className="text-red-400 text-xs text-center">{error}</p>}
                 <button type="submit" disabled={sending}
                   className="w-full flex items-center justify-center gap-2 py-3.5 text-black font-bold rounded-xl text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all glow disabled:opacity-60"
                   style={{ background:'linear-gradient(135deg,#10b981,#34d399)' }}>
