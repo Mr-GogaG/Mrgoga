@@ -3,7 +3,7 @@ import { CheckCircle, Zap } from 'lucide-react'
 import { pricing } from '../data/content'
 
 export default function Pricing() {
-  const go = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  const go = () => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })
   return (
     <section id="pricing" className="section" style={{ background:'linear-gradient(180deg,#050505 0%,#000 100%)' }}>
       <div className="max-w-7xl mx-auto px-6">
@@ -17,8 +17,9 @@ export default function Pricing() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {pricing.map((t, i) => (
             <motion.div key={t.id} initial={{ opacity:0, y:44 }} whileInView={{ opacity:1, y:0 }}
+              whileHover={{ y: -6, scale: t.featured ? 1.05 : 1.03, boxShadow: `0 20px 50px ${t.color}35` }}
               viewport={{ once:true, amount:.08 }} transition={{ duration:.55, delay: i*.1 }}
-              className={`relative rounded-2xl p-6 flex flex-col transition-all duration-300 ${t.featured ? 'border-2' : 'card'}`}
+              className={`relative rounded-2xl p-6 flex flex-col cursor-pointer ${t.featured ? 'border-2' : 'card'}`}
               style={t.featured ? {
                 borderColor: t.color,
                 background: `linear-gradient(160deg,${t.color}08,#000)`,
@@ -27,7 +28,7 @@ export default function Pricing() {
               } : { borderColor:`${t.color}15` }}>
 
               {t.featured && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-bold text-black"
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[11px] font-bold text-white"
                   style={{ background:`linear-gradient(135deg,${t.color},#34d399)` }}>
                   <Zap size={11} /> Most Popular
                 </div>
